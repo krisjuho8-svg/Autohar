@@ -1,0 +1,19 @@
+{
+  "name": "request-inspector",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "dev": "PORT=8080 node server.js"
+  },
+  "dependencies": {
+    "@google-cloud/firestore": "^7.11.3",
+    "body-parser": "^2.2.0",
+    "compression": "^1.8.1",
+    "cookie-parser": "^1.4.6",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.3.0",
+    "firebase-admin": "^13.4.0",
+    "helmet": "^7.1.0"
+  }
+}
