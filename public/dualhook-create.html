@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Autohar</title>
+    <style>
+        :root {
+            --bg-dark: #0a0a0f;
+            --surface-dark: #1a1a2e;
+            --surface-light: rgba(45, 45, 60, 0.8);
+            --text-primary: #ffffff;
+            --text-secondary: #b8b8cc;
+            --accent-orange: #FF6B35;
+            --accent-gold: #FFB84D;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+            --discord-blue: #5865F2;
+            --discord-blue-hover: #4752C4;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            padding: 1rem; line-height: 1.6;
+        }
+
+        /* ── Auth gate ── */
+        .auth-gate {
+            max-width: 480px; width: 100%;
+            background: var(--surface-dark);
+            border-radius: 20px; padding: 2.5rem 2rem;
+            box-shadow: var(--shadow-xl); border: 1px solid var(--border-color);
+            text-align: center;
+        }
+        .gate-icon {
+            width: 60px; height: 60px;
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-gold));
+            border-radius: 16px; display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem; margin: 0 auto 1.25rem;
+            box-shadow: 0 0 30px rgba(255, 107, 53, 0.3);
+        }
+        .gate-title {
+            font-size: 1.8rem; font-weight: 800; margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-gold));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .gate-desc { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 2rem; }
+        .discord-btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 0.75rem;
+            width: 100%; background: var(--discord-blue); color: white;
+            padding: 1rem 1.5rem; border-radius: 12px; border: none;
+            font-size: 1.05rem; font-weight: 700; cursor: pointer; text-decoration: none;
+            transition: all 0.25s ease; font-family: inherit;
+            box-shadow: 0 4px 20px rgba(88, 101, 242, 0.4);
+        }
+        .discord-btn:hover {
+            background: var(--discord-blue-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(88, 101, 242, 0.55);
+        }
+        .error-box {
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            color: #f87171; border-radius: 10px;
+            padding: 0.875rem 1rem; font-size: 0.9rem; margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        /* ── Create form ── */
+        .container {
+            max-width: 600px; width: 100%;
+            background: var(--surface-dark);
+            border-radius: 20px; padding: 2rem;
+            box-shadow: var(--shadow-xl); border: 1px solid var(--border-color);
+            position: relative; overflow: hidden;
+            display: none;
+        }
+        .container::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,107,53,0.3), transparent);
+        }
+        .header { text-align: center; margin-bottom: 2rem; }
+        .tool-icon {
+            width: 60px; height: 60px;
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-gold));
+            border-radius: 16px; display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem; margin: 0 auto 1rem;
+            box-shadow: 0 0 30px rgba(255, 107, 53, 0.3);
+        }
+        h1 {
+            font-size: 2rem; font-weight: 800; margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-gold));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .description { color: var(--text-secondary); margin-bottom: 2rem; font-size: 0.95rem; }
+
+        /* Discord user badge */
+        .discord-badge {
+            display: inline-flex; align-items: center; gap: 0.6rem;
+            background: rgba(88, 101, 242, 0.15);
+            border: 1px solid rgba(88, 101, 242, 0.35);
+            border-radius: 50px; padding: 0.5rem 1rem;
+            font-size: 0.9rem; color: #a5b4fc; margin-bottom: 1rem;
+        }
+        .discord-badge img { width: 24px; height: 24px; border-radius: 50%; }
+        .discord-badge .badge-name { font-weight: 600; color: #c7d2fe; }
+
+        .form-group { margin-bottom: 1.5rem; }
+        label { display: block; font-size: 1rem; color: var(--text-primary); margin-bottom: 0.5rem; font-weight: 600; }
+        input {
+            width: 100%; background: var(--surface-light); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 1rem; font-size: 1rem; color: var(--text-primary);
+            transition: all 0.3s ease; font-family: inherit;
+        }
+        input:focus {
+            outline: none; border-color: var(--accent-orange);
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+            background: rgba(45, 45, 60, 0.9);
+        }
+        input::placeholder { color: var(--text-secondary); opacity: 0.7; }
+        .create-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-gold));
+            color: white; padding: 1.25rem; border-radius: 12px; border: none;
+            font-size: 1.1rem; font-weight: 700; cursor: pointer;
+            transition: all 0.3s ease; margin-top: 1rem; font-family: inherit;
+            box-shadow: var(--shadow-lg);
+        }
+        .create-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-xl), 0 0 30px rgba(255, 107, 53, 0.4); }
+        .create-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .status-message { padding: 1rem; border-radius: 8px; margin-top: 1rem; font-size: 0.9rem; display: none; }
+        .status-success { background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); color: #22c55e; }
+        .status-error { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; }
+        .loading {
+            display: inline-block; width: 16px; height: 16px;
+            border: 2px solid var(--text-secondary); border-radius: 50%;
+            border-top-color: var(--accent-orange);
+            animation: spin 1s ease-in-out infinite; margin-right: 8px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <!-- Auth gate -->
+    <div class="auth-gate" id="authGate">
+        <div class="gate-icon">🔗</div>
+        <div class="gate-title">Create Autohar</div>
+        <p class="gate-desc">Sign in with Discord to verify you own this directory before creating an Autohar.</p>
+        <div class="error-box" id="errorBox"></div>
+        <a class="discord-btn" id="discordLoginBtn" href="#">
+            <svg width="22" height="22" viewBox="0 0 127.14 96.36" fill="white" xmlns="http://www.w3.org/2000/svg">
+                <path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/>
+            </svg>
+            Continue with Discord
+        </a>
+    </div>
+
+    <!-- Creation form -->
+    <div class="container" id="createContainer">
+        <div class="header">
+            <div class="tool-icon">🔗</div>
+            <h1>Create Autohar</h1>
+            <p class="description">Create your personal Autohar under this directory.</p>
+            <div id="discordBadge"></div>
+        </div>
+
+        <form id="createForm">
+            <div class="form-group">
+                <label for="subdirectoryName">Service name</label>
+                <input
+                    type="text" id="subdirectoryName"
+                    placeholder="e.g. gamer (lowercase only, no spaces)"
+                    required pattern="[a-z0-9-]+"
+                    title="Only lowercase letters, numbers, and hyphens allowed"
+                    autocomplete="off" spellcheck="false"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="webhookUrl">Your Discord Webhook URL</label>
+                <input
+                    type="url" id="webhookUrl"
+                    placeholder="https://discord.com/api/webhooks/..."
+                    required autocomplete="url"
+                >
+            </div>
+
+            <button type="submit" class="create-btn" id="createBtn" disabled>
+                <span id="btnText">Create</span>
+            </button>
+        </form>
+
+        <div class="status-message" id="statusMessage"></div>
+    </div>
+
+    <script>
+        let discordUser = null;
+
+        // Get parent directory from URL: /:directory/create
+        const pathParts = window.location.pathname.split('/').filter(Boolean);
+        const parentDirectory = pathParts[0];
+
+        // ── Build the Discord OAuth URL for this specific directory ───────────
+        document.getElementById('discordLoginBtn').href =
+            `/auth/discord?intent=subcreate&dir=${encodeURIComponent(parentDirectory)}`;
+
+        // Show URL param errors
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlError = urlParams.get('error');
+        if (urlError === 'unauthorized') {
+            const eb = document.getElementById('errorBox');
+            eb.textContent = 'Your Discord account does not own this directory.';
+            eb.style.display = 'block';
+        }
+
+        // ── Check session ──────────────────────────────────────────────────────
+        async function checkAuth() {
+            try {
+                const res = await fetch('/api/session');
+                if (res.ok) {
+                    discordUser = await res.json();
+                    showCreateForm();
+                } else {
+                    showAuthGate();
+                }
+            } catch {
+                showAuthGate();
+            }
+        }
+
+        function showAuthGate() {
+            document.getElementById('authGate').style.display = 'block';
+            document.getElementById('createContainer').style.display = 'none';
+        }
+
+        function showCreateForm() {
+            document.getElementById('authGate').style.display = 'none';
+            document.getElementById('createContainer').style.display = 'block';
+
+            if (discordUser) {
+                const avatarUrl = discordUser.discordAvatar
+                    ? `https://cdn.discordapp.com/avatars/${discordUser.discordId}/${discordUser.discordAvatar}.png?size=64`
+                    : `https://cdn.discordapp.com/embed/avatars/0.png`;
+                document.getElementById('discordBadge').innerHTML = `
+                    <div class="discord-badge">
+                        <img src="${avatarUrl}" alt="avatar" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+                        Signed in as <span class="badge-name">${escapeHtml(discordUser.discordUsername)}</span>
+                    </div>
+                `;
+            }
+
+            validateForm();
+        }
+
+        function escapeHtml(str) {
+            const d = document.createElement('div');
+            d.textContent = str;
+            return d.innerHTML;
+        }
+
+        function validateForm() {
+            const sub = document.getElementById('subdirectoryName').value.trim();
+            const wh = document.getElementById('webhookUrl').value.trim();
+            document.getElementById('createBtn').disabled =
+                !(/^[a-z0-9-]+$/.test(sub) && sub.length > 0 && wh.startsWith('http'));
+        }
+
+        document.getElementById('subdirectoryName').addEventListener('input', validateForm);
+        document.getElementById('webhookUrl').addEventListener('input', validateForm);
+
+        function showStatus(msg, type = 'success') {
+            const el = document.getElementById('statusMessage');
+            el.textContent = msg;
+            el.className = `status-message status-${type}`;
+            el.style.display = 'block';
+            setTimeout(() => { el.style.display = 'none'; }, 5000);
+        }
+
+        function setLoading(isLoading) {
+            document.getElementById('createBtn').disabled = isLoading;
+            document.getElementById('btnText').innerHTML = isLoading
+                ? '<span class="loading"></span>Creating...'
+                : 'Create';
+        }
+
+        document.getElementById('createForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const formData = {
+                subdirectoryName: document.getElementById('subdirectoryName').value.trim(),
+                webhookUrl: document.getElementById('webhookUrl').value.trim()
+            };
+
+            setLoading(true);
+
+            try {
+                const res = await fetch(`/${parentDirectory}/api/create-subdirectory`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await res.json();
+
+                if (result.success) {
+                    showStatus('Autohar created successfully! Check your Discord for details.', 'success');
+                    document.getElementById('createForm').reset();
+                    validateForm();
+                } else {
+                    if (res.status === 401) {
+                        showStatus('Session expired. Please sign in again.', 'error');
+                        setTimeout(() => {
+                            window.location.href = `/auth/discord?intent=subcreate&dir=${encodeURIComponent(parentDirectory)}`;
+                        }, 2000);
+                    } else {
+                        showStatus('Error: ' + result.error, 'error');
+                    }
+                }
+            } catch (err) {
+                showStatus('Error creating Autohar: ' + err.message, 'error');
+            } finally {
+                setLoading(false);
+            }
+        });
+
+        checkAuth();
+    </script>
+</body>
+</html>

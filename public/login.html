@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - RBX Tools</title>
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --dark-gradient: linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 50%, #0f0f23 100%);
+            --surface-dark: rgba(20, 20, 30, 0.95);
+            --text-primary: #FFFFFF;
+            --text-secondary: #B8BCC8;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --shadow-xl: 0 35px 60px -15px rgba(0, 0, 0, 0.7);
+            --discord-blue: #5865F2;
+            --discord-blue-hover: #4752C4;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--dark-gradient);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.15) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        .login-container {
+            max-width: 420px;
+            width: 100%;
+            background: var(--surface-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 3rem 2.5rem;
+            box-shadow: var(--shadow-xl);
+            backdrop-filter: blur(20px);
+            text-align: center;
+        }
+        .logo-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--primary-gradient);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 1.25rem;
+            box-shadow: 0 0 40px rgba(102, 126, 234, 0.35);
+        }
+        h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.4rem;
+        }
+        .subtitle { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 2rem; }
+        .divider { height: 1px; background: var(--border-color); margin: 2rem 0; }
+        .discord-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            width: 100%;
+            background: var(--discord-blue);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            border: none;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            font-family: inherit;
+            box-shadow: 0 4px 20px rgba(88, 101, 242, 0.4);
+        }
+        .discord-btn:hover {
+            background: var(--discord-blue-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(88, 101, 242, 0.55);
+        }
+        .error-box {
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            color: #f87171;
+            border-radius: 10px;
+            padding: 0.875rem 1rem;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+        .footer-note {
+            margin-top: 2rem;
+            color: var(--text-secondary);
+            font-size: 0.82rem;
+            line-height: 1.6;
+        }
+        .footer-note a { color: #818cf8; text-decoration: none; }
+        .footer-note a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo-icon">🛠️</div>
+        <h1>RBX Tools</h1>
+        <p class="subtitle">Sign in to access your dashboard</p>
+
+        <div class="error-box" id="errorBox"></div>
+
+        <a class="discord-btn" href="/auth/discord?intent=login">
+            <svg width="22" height="22" viewBox="0 0 127.14 96.36" fill="white" xmlns="http://www.w3.org/2000/svg">
+                <path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/>
+            </svg>
+            Continue with Discord
+        </a>
+
+        <div class="divider"></div>
+
+        <p class="footer-note">
+            Don't have a directory yet?<br>
+            <a href="/auth/discord?intent=create">Create one here</a>
+        </p>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const error = params.get('error');
+        const errorBox = document.getElementById('errorBox');
+        const errorMessages = {
+            not_found: 'No directory is linked to your Discord account. Please create one first.',
+            discord_denied: 'Discord authorization was cancelled. Please try again.',
+            discord_failed: 'Could not connect to Discord. Please try again.',
+            server_error: 'A server error occurred. Please try again in a moment.',
+        };
+        if (error && errorMessages[error]) {
+            errorBox.textContent = errorMessages[error];
+            errorBox.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
